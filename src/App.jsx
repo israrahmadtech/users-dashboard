@@ -1,7 +1,10 @@
+import UserList from "./components/UserList/UserList"
 
 function App() {
   return (
-    <div className="text-xl font-bold">App</div>
+    <>
+    <UserList/>
+    </>
   )
 }
 
