@@ -1,7 +1,9 @@
 # User Management React Application
 
 ## Overview
-This task requires building a React application for managing users. Users can be created, listed, searched, viewed, edited, and deleted. The app initializes with a default list of users stored in state management. Instead of using Zustand (as originally specified), we will use Redux Toolkit (RTK) for state management, as it provides similar capabilities for handling global state efficiently.
+This task requires building a React application for managing users. Users can be created, listed, searched, viewed, edited, and deleted. The app initializes with a default list of users stored in state management. Instead of using Zustand (as I don't used before), we will use Redux Toolkit (RTK) for state management(because I am an expert in it), as it provides similar capabilities for handling global state efficiently.
+
+Tech Stack Used: React.js(+Redux Tool Kit), Tailwind CSS.
 
 The application focuses on core React principles, including functional components, hooks, form handling, validation, and immutable state updates. No local state duplication is allowed—everything related to users must be managed globally via RTK.
 
