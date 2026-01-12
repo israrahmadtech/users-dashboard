@@ -1,10 +1,11 @@
-import { FiUser, FiMapPin, FiBriefcase, FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiUser, FiMapPin, FiBriefcase } from "react-icons/fi";
 
-function UserCard({user}) {
+function UserCard({ user, setEditUser, onClick }) {
+    
     return (
-        <div
+        <div onClick={() => {onClick(); setEditUser(null)}}
             key={user.id}
-            className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:border-orange-400 transition-all"
+            className="cursor-pointer bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:border-orange-400 transition-all"
         >
             {/* avatar + name */}
             <div className="flex items-center gap-4">
@@ -33,19 +34,6 @@ function UserCard({user}) {
                     <FiBriefcase />
                     {user.company}
                 </span>
-            </div>
-
-            {/* btns */}
-            <div className="mt-6 flex gap-3">
-                <button className="flex-1 flex items-center justify-center gap-2 bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 rounded-lg py-2.5 text-sm font-medium">
-                    <FiEdit />
-                    Edit
-                </button>
-
-                <button className="flex-1 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg py-2.5 text-sm font-medium">
-                    <FiTrash2 />
-                    Delete
-                </button>
             </div>
         </div>
     )

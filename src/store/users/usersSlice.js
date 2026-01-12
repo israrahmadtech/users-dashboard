@@ -1,10 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-const users = [
-    { id: 1, name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', city: 'New York', company: 'ABC Corp' },
-    { id: 2, name: 'Jane Smith', email: 'jane@example.com', phone: '987-654-3210', city: 'Los Angeles', company: 'XYZ Inc' },
-    { id: 3, name: 'Bob Johnson', email: 'bob@example.com', phone: '555-123-4567', city: 'Chicago', company: 'Tech Solutions' },
-]
+import { users } from './usersData';
+import toast from 'react-hot-toast';
 
 const initialState = {
     users,
@@ -15,30 +11,62 @@ const initialState = {
 let nextId = initialState.users.length + 1;
 
 const userSlice = createSlice({
-    name: 'users',
+    name: 'usersManager',
     initialState,
     reducers: {
         addUser: (state, action) => {
-            const newUser = { ...action.payload, id: nextId++ };
+            const payload = action.payload || {};
+            if (!payload.name || !payload.email) {
+                toast.error("Name and Email are required!");
+                return;
+            }
+            const newUser = { ...payload, id: nextId++ };
             state.users.push(newUser);
+            toast.success(`${newUser.name} added successfully!`);
         },
 
         updateUser: (state, action) => {
-            const index = state.users.findIndex(user => user.id === action.payload.id);
-            if (index !== -1) {
-                state.users[index] = { ...state.users[index], ...action.payload };
+            const payload = action.payload || {};
+            if (!payload.id) {
+                toast.error("Invalid user ID");
+                return;
             }
+
+            const index = state.users.findIndex((user) => user.id === payload.id);
+            if (index === -1) {
+                toast.error("User not found!");
+                return;
+            }
+
+            state.users[index] = { ...state.users[index], ...payload };
+            toast.success(`${state.users[index].name} updated successfully!`);
         },
 
         deleteUser: (state, action) => {
-            state.users = state.users.filter(user => user.id !== action.payload);
-            if (state.selectedUser?.id === action.payload) {
+            const id = action.payload;
+            if (!id) {
+                toast.error("Invalid user ID");
+                return;
+            }
+
+            const user = state.users.find((u) => u.id === id);
+            if (!user) {
+                toast.error("User not found!");
+                return;
+            }
+
+            state.users = state.users.filter((u) => u.id !== id);
+
+            // Clear selected user if it's the deleted one
+            if (state.selectedUser?.id === id) {
                 state.selectedUser = null;
             }
+
+            toast.success(`${user.name} deleted successfully!`);
         },
-        
+
         setSelectedUser: (state, action) => {
-            state.selectedUser = action.payload;
+            state.selectedUser = action.payload || null;
         },
     },
 });

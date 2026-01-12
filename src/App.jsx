@@ -1,9 +1,11 @@
-import UserList from "./components/UserList/UserList"
+import { Toaster } from "react-hot-toast"
+import UserList from "./pages/UserList/UserList"
 
 function App() {
   return (
     <>
-    <UserList/>
+      <Toaster position="top-right" reverseOrder={false} />
+      <UserList />
     </>
   )
 }
