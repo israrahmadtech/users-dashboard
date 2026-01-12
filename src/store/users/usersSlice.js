@@ -20,6 +20,18 @@ const userSlice = createSlice({
                 toast.error("All fields are required!");
                 return;
             }
+
+            const email = payload.email.trim().toLowerCase();
+            // Duplicate email check
+            const alreadyExists = state.users.some(
+                (user) => user.email.toLowerCase() === email
+            );
+
+            if (alreadyExists) {
+                toast.error("User with this email already exists!");
+                return;
+            }
+
             const newUser = { ...payload, id: nextId++ };
             state.users.push(newUser);
             state.totalUsers += 1
@@ -28,7 +40,7 @@ const userSlice = createSlice({
 
         updateUser: (state, action) => {
             const payload = action.payload || {};
-            
+
             if (!payload.id) {
                 toast.error("Invalid user ID");
                 return;

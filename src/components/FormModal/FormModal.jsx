@@ -1,7 +1,10 @@
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { FiX, FiUser, FiMail, FiMapPin, FiBriefcase, FiPhone } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formData, setFormData }) {
+    const { users = [], selectedUser = null } = useSelector(state => state.usersManager)
     // Edit mode
     useEffect(() => {
         if (mode === "edit" && initialData) {
@@ -18,8 +21,41 @@ function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formD
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = (email) => emailRegex.test(email);
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!formData.name || !formData.email || !formData.phone || !formData.city || !formData.company) {
+            toast.error("All fields are required!");
+            return;
+        }
+
+        const email = formData.email.trim().toLowerCase();
+
+        if (!isValidEmail(email)) {
+            toast.error("Invalid email!")
+            return
+        }
+
+        // Duplicate email check based on mode
+        if (mode === "add") {
+            // Adding a new user
+            const alreadyExists = users?.find((u) => u.email.toLowerCase() === email);
+            if (alreadyExists) {
+                toast.error("User with this email already exists!");
+                return;
+            }
+        } else if (mode === "edit") {
+            // Editing an existing user
+            const alreadyExists = users?.find( (u) => u.email.toLowerCase() === email && u.id !== selectedUser?.id );
+            if (alreadyExists) {
+                toast.error("Another user with this email already exists!");
+                return;
+            }
+        }
+
         onSubmit(formData);
         onClose();
     };
