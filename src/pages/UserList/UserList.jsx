@@ -4,9 +4,10 @@ import { FiUsers, FiPlus } from "react-icons/fi";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import UserCard from "../../components/UserCard/UserCard";
 import FormModal from "../../components/FormModal/FormModal";
-import { addUser, updateUser } from "../../store/users/usersSlice";
+import { addUser, setSelectedUser, updateUser } from "../../store/users/usersSlice";
 import UserDetailsPanel from "../../components/UserDetailsPanel/UserDetailsPanel";
 
+// Initial form data(reset)
 const initialFormState = {
     name: "",
     email: "",
@@ -16,9 +17,10 @@ const initialFormState = {
 };
 
 const UserList = () => {
-    const { users = [], totalUsers = 0 } = useSelector(
+    // users slice - RTK
+    const { users = [], totalUsers = 0, selectedUser = null } = useSelector(
         (state) => state?.usersManager || {}
-    );
+    );    
     const dispatch = useDispatch()
 
     // Form state
@@ -27,10 +29,6 @@ const UserList = () => {
     // states for form model
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editUser, setEditUser] = useState(null);
-
-    // states for user panel
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [isPanelOpen, setIsPanelOpen] = useState(false);
 
     const [search, setSearch] = useState("");
     // Realtime filter
@@ -55,10 +53,10 @@ const UserList = () => {
         <div className="container mx-auto px-4 py-8 space-y-8">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
-                    <FiUsers />
-                    Users Dashboard
-                    <span className="ml-3 text-sm bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full font-medium">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 flex flex-wrap items-center gap-2">
+                    <FiUsers className="flex-shrink-0 text-3xl" />
+                    <span className="whitespace-nowrap">Users Dashboard</span>
+                    <span className="ml-auto sm:ml-3 text-sm bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full font-medium flex-shrink-0">
                         {filteredUsers.length} / {totalUsers}
                     </span>
                 </h2>
@@ -67,10 +65,10 @@ const UserList = () => {
                     <SearchBar value={search} onChange={setSearch} />
 
                     <button
-                        className="cursor-pointer flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-lg font-medium transition-all shadow-sm hover:shadow-md active:scale-95"
+                        className="cursor-pointer flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-2 sm:px-4 md:px-6 py-1.5 sm:py-2 md:py-2.5 rounded-lg font-medium transition-all shadow-sm hover:shadow-md active:scale-95"
                         onClick={() => { setEditUser(null); setFormData(initialFormState); setIsModalOpen(true) }}
                     >
-                        <FiPlus className="text-lg" />
+                        <FiPlus className="text-lg hidden md:inline" />
                         Add New User
                     </button>
                 </div>
@@ -87,33 +85,34 @@ const UserList = () => {
             {/* Cards */}
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredUsers?.map((user) => (
-                    <UserCard key={"user-" + user.id} onClick={() => { setSelectedUser(user); setIsPanelOpen(true) }}
+                    <UserCard key={"user-" + user.id} onClick={() => { dispatch(setSelectedUser({...user})); }}
                         setIsModalOpen={setIsModalOpen} setEditUser={setEditUser} user={user} />
                 ))}
             </div>
 
             {/* user details panel */}
-            <UserDetailsPanel
-                user={selectedUser}
-                isOpen={isPanelOpen}
-                onClose={() => { setIsPanelOpen(false); }}
-                onEdit={() => {
-                    setEditUser(selectedUser);
-                    setIsModalOpen(true);
-                }}
-            />
+            {selectedUser && (
+                <UserDetailsPanel
+                    user={selectedUser}
+                    onClose={() => dispatch(setSelectedUser(null))}
+                    onEdit={() => {
+                        setEditUser(selectedUser);
+                        setIsModalOpen(true);
+                    }}
+                />
+            )}
 
             {/* form modal */}
             <FormModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => {setIsModalOpen(false); setFormData({...selectedUser})}}
                 mode={editUser ? "edit" : "add"}
                 initialData={editUser}
                 formData={formData}
                 setFormData={setFormData}
                 onSubmit={(data) => {
                     if (editUser) {
-                        dispatch(updateUser(data))
+                        dispatch(updateUser({...data}))
                     } else {
                         dispatch(addUser({ ...data }))
                     }

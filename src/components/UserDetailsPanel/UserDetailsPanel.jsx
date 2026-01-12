@@ -1,12 +1,15 @@
 import { FiX, FiMail, FiPhone, FiMapPin, FiBriefcase, FiEdit, FiTrash2 } from "react-icons/fi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteUser } from "../../store/users/usersSlice";
 
-const UserDetailsPanel = ({ user, isOpen, onClose, onEdit, onDelete }) => {
-    if (!isOpen || !user) return null;
 
+const UserDetailsPanel = ({ onClose, onEdit }) => {
+    const { selectedUser } = useSelector(state => state.usersManager)
     const dispatch = useDispatch()
 
+    if (!selectedUser) return null;
+    
+    // delete user
     function handleDeleteUser(userId) {
         const confirmed = confirm("Do you really want to delete user?")
         if (confirmed) {
@@ -41,26 +44,26 @@ const UserDetailsPanel = ({ user, isOpen, onClose, onEdit, onDelete }) => {
                     {/* Avatar */}
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center text-white text-2xl font-bold">
-                            {user.name?.charAt(0).toUpperCase()}
+                            {selectedUser.name?.charAt(0).toUpperCase()}
                         </div>
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900">
-                                {user.name}
+                                {selectedUser.name}
                             </h3>
                             <p className="text-sm text-gray-500">
-                                {user.email}
+                                {selectedUser.email}
                             </p>
                         </div>
                     </div>
 
                     {/* Info */}
-                    <InfoRow icon={<FiMail />} label="Email" value={user.email} />
-                    <InfoRow icon={<FiPhone />} label="Phone" value={user.phone || "—"} />
-                    <InfoRow icon={<FiMapPin />} label="City" value={user.city} />
+                    <InfoRow icon={<FiMail />} label="Email" value={selectedUser.email} />
+                    <InfoRow icon={<FiPhone />} label="Phone" value={selectedUser.phone || "—"} />
+                    <InfoRow icon={<FiMapPin />} label="City" value={selectedUser.city} />
                     <InfoRow
                         icon={<FiBriefcase />}
                         label="Company"
-                        value={user.company}
+                        value={selectedUser.company}
                     />
 
                     {/* Buttons */}
@@ -74,7 +77,7 @@ const UserDetailsPanel = ({ user, isOpen, onClose, onEdit, onDelete }) => {
 
                         <button
                             className="cursor-pointer flex-1 flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg py-2.5 text-sm font-medium"
-                            onClick={() => handleDeleteUser(user.id)}
+                            onClick={() => handleDeleteUser(selectedUser.id)}
                         >
                             <FiTrash2 /> Delete
                         </button>

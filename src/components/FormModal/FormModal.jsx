@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { FiX, FiUser, FiMail, FiMapPin, FiBriefcase, FiPhoneCall, FiPhone } from "react-icons/fi";
+import { useEffect } from "react";
+import { FiX, FiUser, FiMail, FiMapPin, FiBriefcase, FiPhone } from "react-icons/fi";
 
 function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formData, setFormData }) {
     // Edit mode
@@ -25,7 +25,7 @@ function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formD
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-2 sm:px-0"
             onClick={onClose}
         >
             <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 relative animate-scaleIn"
@@ -83,14 +83,14 @@ function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formD
                     <div className="flex gap-3 pt-4">
                         <button
                             onClick={() => { onClose() }} type="button"
-                            className="flex-1 border border-gray-300 rounded-lg py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                            className="cursor-pointer flex-1 border border-gray-300 rounded-lg py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
                         >
                             Cancel
                         </button>
 
                         <button
                             type="submit"
-                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white rounded-lg py-2.5 text-sm font-medium"
+                            className="cursor-pointer flex-1 bg-orange-500 hover:bg-orange-600 text-white rounded-lg py-2.5 text-sm font-medium"
                         >
                             {mode === "add" ? "Add User" : "Update User"}
                         </button>
@@ -106,12 +106,8 @@ export default FormModal;
 /* Reusable Input */
 const Input = ({ icon, ...props }) => (
     <div className="relative">
-        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-            {icon}
-        </span>
-        <input
-            {...props}
-            required
+        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">{icon}</span>
+        <input {...props} required
             className="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400"
         />
     </div>

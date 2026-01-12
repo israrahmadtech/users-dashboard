@@ -16,19 +16,26 @@ const userSlice = createSlice({
     reducers: {
         addUser: (state, action) => {
             const payload = action.payload || {};
-            if (!payload.name || !payload.email) {
-                toast.error("Name and Email are required!");
+            if (!payload.name || !payload.email || !payload.phone || !payload.city || !payload.company) {
+                toast.error("All fields are required!");
                 return;
             }
             const newUser = { ...payload, id: nextId++ };
             state.users.push(newUser);
+            state.totalUsers += 1
             toast.success(`${newUser.name} added successfully!`);
         },
 
         updateUser: (state, action) => {
             const payload = action.payload || {};
+            
             if (!payload.id) {
                 toast.error("Invalid user ID");
+                return;
+            }
+
+            if (!payload.name || !payload.email || !payload.phone || !payload.city || !payload.company) {
+                toast.error("All fields are required!");
                 return;
             }
 
@@ -37,8 +44,10 @@ const userSlice = createSlice({
                 toast.error("User not found!");
                 return;
             }
+            const updatedUser = { ...state.users[index], ...payload }
 
-            state.users[index] = { ...state.users[index], ...payload };
+            state.users[index] = updatedUser
+            state.selectedUser = updatedUser
             toast.success(`${state.users[index].name} updated successfully!`);
         },
 

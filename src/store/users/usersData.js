@@ -9,8 +9,8 @@ export const users = [
     },
     {
         id: 2,
-        name: "Ali Raza",
-        email: "ali.raza@gmail.com",
+        name: "Abuzar Afridi",
+        email: "abuzar.afridi@gmail.com",
         phone: "0321-9876543",
         city: "Lahore",
         company: "NetSol Technologies"
@@ -41,16 +41,16 @@ export const users = [
     },
     {
         id: 6,
-        name: "Sara Khan",
-        email: "sara.khan@gmail.com",
+        name: "Rafi Developer",
+        email: "rafi.dev@gmail.com",
         phone: "0300-5566778",
         city: "Karachi",
         company: "TRG Pakistan"
     },
     {
         id: 7,
-        name: "Ayesha Ali",
-        email: "ayesha.ali@gmail.com",
+        name: "Wahab Khan",
+        email: "wahab.khan@gmail.com",
         phone: "0322-9988776",
         city: "Lahore",
         company: "VentureDive"
@@ -65,8 +65,8 @@ export const users = [
     },
     {
         id: 9,
-        name: "Fatima Noor",
-        email: "fatima.noor@gmail.com",
+        name: "Umar Afridi",
+        email: "umar.afridi@gmail.com",
         phone: "0346-6677889",
         city: "Peshawar",
         company: "Techlogix"
