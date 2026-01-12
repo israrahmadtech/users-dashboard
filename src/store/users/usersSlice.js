@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { users } from './usersData';
 import toast from 'react-hot-toast';
+import { isValidEmail } from '../../components/utils/utils';
 
 const initialState = {
     users,
@@ -16,51 +17,69 @@ const userSlice = createSlice({
     reducers: {
         addUser: (state, action) => {
             const payload = action.payload || {};
+
+            // Required fields
             if (!payload.name || !payload.email || !payload.phone || !payload.city || !payload.company) {
                 toast.error("All fields are required!");
                 return;
             }
 
+            // Email format validation
             const email = payload.email.trim().toLowerCase();
-            // Duplicate email check
-            const alreadyExists = state.users.some(
-                (user) => user.email.toLowerCase() === email
-            );
+            if (!isValidEmail(email)) {
+                toast.error("Invalid email!");
+                return;
+            }
 
+            // Duplicate email check
+            const alreadyExists = state.users.some(user => user.email.toLowerCase() === email);
             if (alreadyExists) {
                 toast.error("User with this email already exists!");
                 return;
             }
 
+            // Add user
             const newUser = { ...payload, id: nextId++ };
             state.users.push(newUser);
-            state.totalUsers += 1
+            state.totalUsers += 1;
             toast.success(`${newUser.name} added successfully!`);
         },
 
         updateUser: (state, action) => {
             const payload = action.payload || {};
 
-            if (!payload.id) {
-                toast.error("Invalid user ID");
-                return;
-            }
-
             if (!payload.name || !payload.email || !payload.phone || !payload.city || !payload.company) {
                 toast.error("All fields are required!");
                 return;
             }
 
-            const index = state.users.findIndex((user) => user.id === payload.id);
+            // Validate email format
+            const email = payload.email.trim().toLowerCase();
+            if (!isValidEmail(email)) {
+                toast.error("Invalid email!");
+                return;
+            }
+
+            // user exists or not
+            const index = state.users.findIndex(user => user.email.toLowerCase() === email);
             if (index === -1) {
                 toast.error("User not found!");
                 return;
             }
-            const updatedUser = { ...state.users[index], ...payload }
 
-            state.users[index] = updatedUser
-            state.selectedUser = updatedUser
-            toast.success(`${state.users[index].name} updated successfully!`);
+            // Prevent duplicate email with other users
+            const duplicate = state.users.find(user => user.email.toLowerCase() === email && user.id !== state.users[index].id);
+            if (duplicate) {
+                toast.error("Another user with this email already exists!");
+                return;
+            }
+
+            // Update user
+            const updatedUser = { ...state.users[index], ...payload };
+            state.users[index] = updatedUser;
+            state.selectedUser = updatedUser;
+
+            toast.success(`${updatedUser.name} updated successfully!`);
         },
 
         deleteUser: (state, action) => {
@@ -77,6 +96,7 @@ const userSlice = createSlice({
             }
 
             state.users = state.users.filter((u) => u.id !== id);
+            state.totalUsers -= 1
 
             // Clear selected user if it's the deleted one
             if (state.selectedUser?.id === id) {

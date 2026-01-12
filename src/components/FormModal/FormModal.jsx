@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { FiX, FiUser, FiMail, FiMapPin, FiBriefcase, FiPhone } from "react-icons/fi";
 import { useSelector } from "react-redux";
+import { isValidEmail } from "../utils/utils";
 
 function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formData, setFormData }) {
     const { users = [], selectedUser = null } = useSelector(state => state.usersManager)
@@ -20,9 +21,6 @@ function FormModal({ isOpen, onClose, onSubmit, mode = "add", initialData, formD
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = (email) => emailRegex.test(email);
 
     const handleSubmit = (e) => {
         e.preventDefault();
